@@ -1,4 +1,4 @@
-/// <summary>
+/// <summary> 
 /// This queue is circular.  When people are added via AddPerson, then they are added to the 
 /// back of the queue (per FIFO rules).  When GetNextPerson is called, the next person
 /// in the queue is saved to be returned and then they are placed back into the back of the queue.  Thus,
@@ -37,17 +37,23 @@ public class TakingTurnsQueue
         {
             throw new InvalidOperationException("No one in the queue.");
         }
-        else
-        {
-            Person person = _people.Dequeue();
-            if (person.Turns > 1)
-            {
-                person.Turns -= 1;
-                _people.Enqueue(person);
-            }
 
-            return person;
+        Person person = _people.Dequeue();
+
+        // If person has infinite turns (0 or less), always add back to the queue
+        if (person.Turns <= 0)
+        {
+            _people.Enqueue(person);
         }
+        // If person has more than 1 turn, decrement and re-add
+        else if (person.Turns > 1)
+        {
+            person.Turns -= 1;
+            _people.Enqueue(person);
+        }
+        // If person has exactly 1 turn, do NOT re-add (they’re done)
+
+        return person;
     }
 
     public override string ToString()
