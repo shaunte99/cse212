@@ -1,29 +1,57 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-// TODO Problem 2 - Write and run test cases and fix the code to match requirements.
+using System;  // Needed for InvalidOperationException
 
 [TestClass]
 public class PriorityQueueTests
 {
     [TestMethod]
-    // Scenario: 
-    // Expected Result: 
-    // Defect(s) Found: 
+    // Scenario: Enqueue items with different priorities and ensure Dequeue returns the highest priority first.
+    // Expected Result: Items are dequeued in order of descending priority.
+    // Defect(s) Found: None. The items dequeued in the correct order.
     public void TestPriorityQueue_1()
     {
         var priorityQueue = new PriorityQueue();
-        Assert.Fail("Implement the test case and then remove this.");
+        priorityQueue.Enqueue("Task A", 1); // Low priority
+        priorityQueue.Enqueue("Task B", 3); // Highest priority
+        priorityQueue.Enqueue("Task C", 2); // Medium
+
+        var first = priorityQueue.Dequeue();  // Should be Task B
+        var second = priorityQueue.Dequeue(); // Should be Task C
+        var third = priorityQueue.Dequeue();  // Should be Task A
+
+        Assert.AreEqual("Task B", first);
+        Assert.AreEqual("Task C", second);
+        Assert.AreEqual("Task A", third);
     }
 
     [TestMethod]
-    // Scenario: 
-    // Expected Result: 
-    // Defect(s) Found: 
+    // Scenario: Enqueue multiple items with the same priority. Dequeue should follow FIFO order.
+    // Expected Result: Items are dequeued in the order they were added.
+    // Defect(s) Found: None. FIFO order was correctly followed.
     public void TestPriorityQueue_2()
     {
         var priorityQueue = new PriorityQueue();
-        Assert.Fail("Implement the test case and then remove this.");
+        priorityQueue.Enqueue("Alpha", 5);
+        priorityQueue.Enqueue("Beta", 5);
+        priorityQueue.Enqueue("Gamma", 5);
+
+        var first = priorityQueue.Dequeue();  // Should be Alpha
+        var second = priorityQueue.Dequeue(); // Should be Beta
+        var third = priorityQueue.Dequeue();  // Should be Gamma
+
+        Assert.AreEqual("Alpha", first);
+        Assert.AreEqual("Beta", second);
+        Assert.AreEqual("Gamma", third);
     }
 
-    // Add more test cases as needed below.
+    [TestMethod]
+    // Scenario: Attempt to Dequeue from an empty queue.
+    // Expected Result: InvalidOperationException is thrown.
+    // Defect(s) Found: None. Exception was correctly thrown.
+    public void TestPriorityQueue_EmptyDequeueThrowsException()
+    {
+        var priorityQueue = new PriorityQueue();
+
+        Assert.ThrowsException<InvalidOperationException>(() => priorityQueue.Dequeue());
+    }
 }
