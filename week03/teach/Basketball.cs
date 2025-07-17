@@ -1,16 +1,6 @@
-﻿/*
- * CSE 212 Lesson 6C 
- * 
- * This code will analyze the NBA basketball data and create a table showing
- * the players with the top 10 career points.
- * 
- * Note about columns:
- * - Player ID is in column 0
- * - Points is in column 8
- * 
- * Each row represents the player's stats for a single season with a single team.
- */
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualBasic.FileIO;
 
 public class Basketball
@@ -22,15 +12,40 @@ public class Basketball
         using var reader = new TextFieldParser("basketball.csv");
         reader.TextFieldType = FieldType.Delimited;
         reader.SetDelimiters(",");
-        reader.ReadFields(); // ignore header row
-        while (!reader.EndOfData) {
-            var fields = reader.ReadFields()!;
+        reader.ReadFields(); // Skip header row
+
+        while (!reader.EndOfData)
+        {
+            var fields = reader.ReadFields();
+            if (fields == null || fields.Length < 9) continue;
+
             var playerId = fields[0];
-            var points = int.Parse(fields[8]);
+            var pointsStr = fields[8];
+
+            if (int.TryParse(pointsStr, out int points))
+            {
+                if (!players.ContainsKey(playerId))
+                {
+                    players[playerId] = points;
+                }
+                else
+                {
+                    players[playerId] += points; // Add up career points
+                }
+            }
         }
 
-        Console.WriteLine($"Players: {{{string.Join(", ", players)}}}");
+        // Sort by total points (descending) and take top 10
+        var top10 = players
+            .OrderByDescending(pair => pair.Value)
+            .Take(10)
+            .ToList();
 
-        var topPlayers = new string[10];
+        Console.WriteLine("Top 10 Players by Total Points:");
+        Console.WriteLine("-------------------------------");
+        foreach (var (playerId, totalPoints) in top10)
+        {
+            Console.WriteLine($"{playerId}: {totalPoints} points");
+        }
     }
 }
