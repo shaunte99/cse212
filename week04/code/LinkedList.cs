@@ -117,7 +117,7 @@ public class LinkedList : IEnumerable<int>
                     curr.Prev!.Next = curr.Next;
                     curr.Next!.Prev = curr.Prev;
                 }
-                return; // only remove first match
+                return; 
             }
 
             curr = curr.Next;
